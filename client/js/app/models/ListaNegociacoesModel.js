@@ -1,10 +1,14 @@
-class ListaNegociacoes {
+class ListaNegociacoesModel {
   constructor() {
     this._negociacoes = [];
   }
 
   adiciona(negociacao) {
     this._negociacoes.push(negociacao);
+  }
+
+  esvazia() {
+    this._negociacoes = [];
   }
 
   // Definindo um getter

@@ -1,4 +1,4 @@
-class Mensagem {
+class MensagemModel {
   constructor(texto = '') {
     this._texto = texto;
   }

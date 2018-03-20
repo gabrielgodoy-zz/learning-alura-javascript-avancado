@@ -1,4 +1,4 @@
-class Negociacao {
+class NegociacaoModel {
   // Definindo atributos de uma classe no Constructor
 
   constructor(data, quantidade, valor) {

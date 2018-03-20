@@ -1,4 +1,4 @@
-# Learning MVC
+# Learning MVC and Design Patterns with JS
 
 Exercícios baseados nos cursos de Javascript avançado da Alura.
 
@@ -8,6 +8,6 @@ O projeto está todo comentado para estudo
 
 Link dos cursos:
 
-- [Parte 1](https://www.alura.com.br/curso-online-javascript-es6-orientacao-a-objetos-parte-1)
-- [Parte 2](https://www.alura.com.br/curso-online-javascript-es6-orientacao-a-objetos-parte-2)
-- [Parte 3](https://www.alura.com.br/curso-online-javascript-es6-orientacao-a-objetos-parte-3)
+- [JavaScript Avançado I: ES6, orientação a objetos e padrões de projetos](https://www.alura.com.br/curso-online-javascript-es6-orientacao-a-objetos-parte-1)
+- [JavaScript Avançado II: ES6, orientação a objetos e padrões de projetos](https://www.alura.com.br/curso-online-javascript-es6-orientacao-a-objetos-parte-2)
+- [JavaScript Avançado III: ES6, orientação a objetos e padrões de projetos](https://www.alura.com.br/curso-online-javascript-es6-orientacao-a-objetos-parte-3)
