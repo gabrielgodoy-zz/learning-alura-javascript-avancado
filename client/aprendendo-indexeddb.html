@@ -1,0 +1,116 @@
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Aprendendo IndexedDB</title>
+</head>
+
+<body>
+  <script src="./js/app/models/NegociacaoModel.js"></script>
+  <script>
+    var connection;
+
+    /*
+      Requisição de abertura do banco de dados
+
+      O segunda argumento indica a versão do banco
+      indexedDB.open('banco-alura', VERSAO_DO_BANCO);
+      Alterando a versão faz com que upgradeneeded rode novamente
+    */
+    var openRequest = window.indexedDB.open('banco-alura', 3);
+
+    // Mediante requisição de abertura de banco,
+    // existem 3 eventos possíveis:
+
+    // Dispara quando banco é criado
+    // ou uma alteração em uma banco já existente foi feita
+    openRequest.onupgradeneeded = (event) => {
+      console.log('Criando ou atualizando um banco já existente');
+
+      const minhaConnection = event.target.result;
+
+      // Destruindo uma objectStore
+      if (minhaConnection.objectStoreNames.contains('negociacoes')) {
+        minhaConnection.deleteObjectStore('negociacoes');
+      }
+
+      // Criar uma objectStore com a propriedade de autoIncrement
+      minhaConnection.createObjectStore('negociacoes', { autoIncrement: true });
+    }
+
+    // Requisição com sucesso
+    openRequest.onsuccess = (event) => {
+      console.log('Conexão realizada com sucesso');
+
+      connection = event.target.result;
+    }
+
+    // Ocorreu um erro 
+    openRequest.onerror = (event) => {
+      console.log(event.target.error);
+    }
+
+    function adiciona() {
+      // Uma transação permite gravação e/ou leitura em uma ObjectStore
+      const transaction = connection.transaction(['negociacoes'], 'readwrite');
+
+      // Com a transação eu obtenho acesso a ObjectStore
+      const store = transaction.objectStore('negociacoes');
+
+      // Criando uma requisição para se escrever no banco
+      const negociacao = new NegociacaoModel(new Date(), 1, 200);
+      const request = store.add(negociacao);
+
+      request.onsuccess = event => {
+        console.log('Negociação concluída com sucesso');
+      }
+
+      request.onerror = event => {
+        console.log('Não foi possível incluir a negociação');
+      }
+    }
+
+    function listaTodos() {
+      // Uma transação permite gravação e/ou leitura em uma ObjectStore
+      const transaction = connection.transaction(['negociacoes'], 'readwrite');
+
+      // Com a transação eu obtenho acesso a uma ObjectStore
+      const store = transaction.objectStore('negociacoes');
+
+      // O cursor é o objeto que consegue ler uma objectStore
+      const cursor = store.openCursor();
+
+      let negociacoes = [];
+
+      // É chamado toda vez que se cria um cursor
+      cursor.onsuccess = event => {
+
+        // Ponteiro para uma negociacao no banco
+        const itemFound = event.target.result;
+
+        // Se o ponteiro achar uma negociacao gravada
+        if (itemFound) {
+          // Valor do dado (negociação)
+          const dado = itemFound.value;
+
+          // Antes de incluir a negociação, criar uma instância da classe
+          negociacoes.push(new NegociacaoModel(dado._data, dado._quantidade, dado._valor));
+
+          // Continua a busca por novos registros na ObjectStore
+          itemFound.continue();
+        } else {
+          // Exibe todas as negociações que foram encontradas no banco
+          console.log(negociacoes);
+        }
+      }
+
+      cursor.onerror = event => {
+        console.log(event.target.error.name);
+      }
+    }
+  </script>
+</body>
+
+</html>

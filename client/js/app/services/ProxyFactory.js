@@ -1,57 +1,95 @@
-// Implementação padrão de projeto PROXY
-// Fornece um objeto substituto do objeto real, para controlar o acesso a esse objeto real
-class ProxyFactory {
-  // Instâncias dessa classe nao possuem métodos static, só a classe em si
-  static create(objeto, props, acao) {
-    return new Proxy(objeto, {
-      /*
-        Armadilha de LEITURA definida nesse handler do proxy
+"use strict";
 
-        Esse get vai ser sempre chamado quando uma propriedade for lida do objeto original,
-        ou quando qualquer método for chamado dentro da classe
+System.register([], function (_export, _context) {
+  "use strict";
 
-        Porque quando se chama um método de uma classe,
-        o JS primeiro chama o get(), e depois dá um apply()
-      */
-      get(target, prop, receiver) {
-        if (props.includes(prop) && ProxyFactory._ehFuncao(target[prop])) {
-          return function() {
-            console.log(`Interceptada "${prop}"`);
-            const retorno = Reflect.apply(target[prop], target, arguments);
+  var _typeof, _createClass, ProxyFactory;
 
-            /*
-              Implementação padrão de projeto OBSERVER
-              Quando o model muda de estado, a view também tem que mudar
-              Função responsável por atualizar a view toda vez que o model muda
-              Automatiza o processo de atualização da view toda vez que o modelo muda
-            */
-            acao(target);
-
-            return retorno;
-          };
-        }
-
-        return Reflect.get(target, prop, receiver);
-      },
-
-      /*
-        Armadilha de ESCRITA definida nesse handler do proxy
-
-        Esse set vai ser sempre chamado quando uma propriedade for sobreescrita no objeto original
-      */
-      set(target, prop, value, receiver) {
-        const retorno = Reflect.set(target, prop, value, receiver);
-
-        if (props.includes(prop)) {
-          acao(target);
-        }
-
-        return retorno;
-      },
-    });
+  function _classCallCheck(instance, Constructor) {
+    if (!(instance instanceof Constructor)) {
+      throw new TypeError("Cannot call a class as a function");
+    }
   }
 
-  static _ehFuncao(funcao) {
-    return typeof funcao == typeof Function;
-  }
-}
+  return {
+    setters: [],
+    execute: function () {
+      _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
+        return typeof obj;
+      } : function (obj) {
+        return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
+      };
+
+      _createClass = function () {
+        function defineProperties(target, props) {
+          for (var i = 0; i < props.length; i++) {
+            var descriptor = props[i];
+            descriptor.enumerable = descriptor.enumerable || false;
+            descriptor.configurable = true;
+            if ("value" in descriptor) descriptor.writable = true;
+            Object.defineProperty(target, descriptor.key, descriptor);
+          }
+        }
+
+        return function (Constructor, protoProps, staticProps) {
+          if (protoProps) defineProperties(Constructor.prototype, protoProps);
+          if (staticProps) defineProperties(Constructor, staticProps);
+          return Constructor;
+        };
+      }();
+
+      ProxyFactory = function () {
+        function ProxyFactory() {
+          _classCallCheck(this, ProxyFactory);
+        }
+
+        _createClass(ProxyFactory, null, [{
+          key: "create",
+          value: function create(objeto, props, acao) {
+            return new Proxy(objeto, {
+              get: function get(target, prop, receiver) {
+                if (props.includes(prop) && ProxyFactory._ehFuncao(target[prop])) {
+                  return function () {
+                    console.log("Interceptada \"" + prop + "\"");
+                    var retorno = Reflect.apply(target[prop], target, arguments);
+
+                    /*
+                      Padrão de projeto OBSERVER
+                      Quando o model muda de estado, a view também tem que mudar
+                      Função responsável por atualizar a view toda vez que o model muda
+                      Automatiza o processo de atualização da view toda vez que o modelo muda
+                    */
+                    acao(target);
+
+                    return retorno;
+                  };
+                }
+
+                return Reflect.get(target, prop, receiver);
+              },
+              set: function set(target, prop, value, receiver) {
+                var retorno = Reflect.set(target, prop, value, receiver);
+
+                if (props.includes(prop)) {
+                  acao(target);
+                }
+
+                return retorno;
+              }
+            });
+          }
+        }, {
+          key: "_ehFuncao",
+          value: function _ehFuncao(funcao) {
+            return (typeof funcao === "undefined" ? "undefined" : _typeof(funcao)) == (typeof Function === "undefined" ? "undefined" : _typeof(Function));
+          }
+        }]);
+
+        return ProxyFactory;
+      }();
+
+      _export("default", ProxyFactory);
+    }
+  };
+});
+//# sourceMappingURL=ProxyFactory.js.map
